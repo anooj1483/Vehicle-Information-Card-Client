@@ -13,6 +13,7 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -60,13 +61,14 @@ public class HttpPostWorker {
             StringEntity postingString = new StringEntity(postJSONData);
             post.setEntity(postingString);
             post.setHeader("Content-type", "application/json");
-            
+            post.setHeader("username", SessionStore.username);
             post.setHeader(ServerConnector.session_header, SessionStore.session_id);
             HttpResponse response = httpClient.execute(post);
             HttpEntity mEntity=response.getEntity();
-            
-            System.err.println(EntityUtils.toString(mEntity));
-            return EntityUtils.toString(mEntity);
+            String response_content=EntityUtils.toString(mEntity);
+            System.err.println(response_content);
+            //JOptionPane.showMessageDialog(null, response_content);
+            return response_content;
         } catch (UnsupportedEncodingException ex) {
             return "Failed";
             //Logger.getLogger(HttpPostWorker.class.getName()).log(Level.SEVERE, null, ex);

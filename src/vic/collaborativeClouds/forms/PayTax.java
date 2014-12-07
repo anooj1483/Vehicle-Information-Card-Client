@@ -6,6 +6,8 @@
 
 package vic.collaborativeClouds.forms;
 
+import vic.collaborativeClouds.serverWorkers.SessionCloser;
+
 /**
  *
  * @author CollaborativeClouds Software Solutions
@@ -31,6 +33,11 @@ public class PayTax extends javax.swing.JFrame {
     private void initComponents() {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -45,6 +52,18 @@ public class PayTax extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        // TODO add your handling code here:
+        try {
+            // TODO add your handling code here:
+            SessionCloser mCloser=new SessionCloser();
+            mCloser.closeSession();
+            this.dispose();
+        }catch(Exception e){
+            
+        }
+    }//GEN-LAST:event_formWindowClosing
 
     /**
      * @param args the command line arguments
