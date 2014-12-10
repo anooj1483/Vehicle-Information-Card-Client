@@ -18,6 +18,7 @@ import javax.swing.JScrollPane;
 import org.json.JSONException;
 import org.json.JSONObject;
 import vic.collaborativeClouds.configs.ServerConnector;
+import vic.collaborativeClouds.qrcode.QRCodeGenerator;
 import vic.collaborativeClouds.serverWorkers.HttpPostWorker;
 import vic.collaborativeClouds.serverWorkers.SessionCloser;
 import vic.collaborativeClouds.utils.ImageLocator;
@@ -386,7 +387,7 @@ public class RegisterVehicle extends javax.swing.JFrame {
         jLabel30.setForeground(new java.awt.Color(255, 255, 255));
         jLabel30.setText("Unladen Weight");
 
-        vehicle_is.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        vehicle_is.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "a new vehicle", "ex-army vehicle", "imported vehicle" }));
 
         jLabel15.setForeground(new java.awt.Color(255, 255, 255));
         jLabel15.setText("Exarmy Imported Vehicle");
@@ -1002,14 +1003,22 @@ public class RegisterVehicle extends javax.swing.JFrame {
             mObject.put("color", color.getText());
             mObject.put("wheel", wheel_base.getText());
             System.err.println(mObject.toString());
-            HttpPostWorker mWorker=new HttpPostWorker();
-            String response=mWorker.PostRequest(ServerConnector.register, mObject.toString());
-            if(response=="Logout"){
-                JOptionPane.showMessageDialog(null, "Session Expired");
-            }else if(response=="Success"){
-                JOptionPane.showMessageDialog(null, "Successfully Registered");
-            }else{
-                JOptionPane.showMessageDialog(null, "Registration Failed");
+            if (registration.getText() != "" && registration.getText() != null) {
+                HttpPostWorker mWorker = new HttpPostWorker();
+
+                String response = mWorker.PostRequest(ServerConnector.register, mObject.toString());
+
+                if (response.contains("Logout")) {
+                    JOptionPane.showMessageDialog(null, "Session Expired");
+                } else if (response.contains("Success")) {
+                    JOptionPane.showMessageDialog(null, "Successfully Registered");
+                    QRCodeGenerator Qrcode = new QRCodeGenerator();
+                    Qrcode.generate(registration.getText());
+                } else {
+                    JOptionPane.showMessageDialog(null, "Registration Failed");
+                }
+            } else {
+                JOptionPane.showMessageDialog(null, "Fill Required Information");
             }
         } catch (Exception e) {
             Logger.getLogger(RegisterVehicle.class.getName()).log(Level.SEVERE, null, e);
